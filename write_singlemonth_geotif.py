@@ -17,14 +17,14 @@ import pandas as pd
 
 from osgeo import gdal, osr
 
-# Data can be downloaded from here: 
+# Data can be downloaded from here:
 # https://podaac.jpl.nasa.gov/dataset/TELLUS_GRAC-GRFO_MASCON_CRI_GRID_RL06_V2
 
 # You will need an EarthData account to access the PO.DAAC drive.
 
 # replace the NetCDF (nc) filename with current mascon netcdf name as it gets updated every month
-input_mascon_file = Path() / 'input' / 'GRCTellus.JPL.200204_202008.GLO.RL06M.MSCNv02CRI.nc' 
-output_geotiff_path = Path() / 'output'
+input_mascon_file = Path('./input/GRCTellus.JPL.200204_202008.GLO.RL06M.MSCNv02CRI.nc')
+output_geotiff_path = Path('./output')
 output_geotiff_path.mkdir(parents=True, exist_ok=True)
 
 
@@ -125,36 +125,36 @@ for time_index in range(0, timesize):
     # following lines sets the grid as 180 to -180 longitude and 90 to -90 latitude to be written into geotif
     temp_1a = np.flipud(temp_lwe)
     temp_1a_uncert = np.flipud(temp_uncertainty)
-    
+
     grid_lwe[time_index, :, 360:720] = temp_1a[:, 0:360]
     grid_lwe[time_index, :, 0:360] = temp_1a[:, 360:720]
-    
+
     grid_uncertainty[time_index, :, 360:720] = temp_1a_uncert[:, 0:360]
     grid_uncertainty[time_index, :, 0:360] = temp_1a_uncert[:, 360:720]
 
     # determine the start and end period for each monthly timestep and use it in geotiff output filenames
     start_time = time_bounds[time_index, 0] + time_epoch
     end_time = time_bounds[time_index, 1] + time_epoch
-    
+
     start_timestamp = pd.to_datetime(start_time - 719529, unit='D')
     end_timestamp = pd.to_datetime(end_time - 719529, unit='D')
-    
+
     start_year = start_timestamp.year
     end_year = end_timestamp.year
-    
+
     start_day_of_year = start_timestamp.dayofyear
     end_day_of_year = end_timestamp.dayofyear
-    
+
     start_timestring = str(start_year)  + ("%03d" %(start_day_of_year,))
     end_timestring = str(end_year)  + ("%03d" %(end_day_of_year,))
-    
+
     current_month_start_date = str(start_timestamp.strftime("%Y-%m-%dT%H:%M:%S"))
     current_month_end_date = str(end_timestamp.strftime("%Y-%m-%dT%H:%M:%S"))
-    
+
     # generate lwe_thickness tiff file
-    
+
     # resolution of dataset is 0.5 degree
-    sr = 0.5 
+    sr = 0.5
 
     output_geotiff_file = 'mascon_lwe_thickness_' + start_timestring + '_' + end_timestring +  '.tif'
     output_geotiff_file = output_geotiff_path / output_geotiff_file
