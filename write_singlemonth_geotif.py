@@ -1,9 +1,11 @@
 #!/usr/bin/env python3
 
+
 # This python script reads the GRACE mascon Level 3 data available in netcdf
 # 'GRCTellus.JPL.*.RL06M.MSCNv02CRI.nc' and creates geotiff for each time step.
 #
 # Each grace timestep has two geotiffs, one for variable lwe_thickness and other for uncertainty.
+
 # Users need to download the GRACE mascon netcdf file and set its location in the variable input_mascon_file (line #25) ;
 # Additionally users need to specify in line # 26 the location of output geotiff.
 # For any comments and feedback, please contact: podaac@jpl.nasa.gov
